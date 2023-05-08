@@ -1,18 +1,47 @@
 package business;
 
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class GrafoDirecionado {
 	
-	private LinkedList<LinkedList<Integer>> grafo;
+	private List<LinkedList<Integer>> grafo;
 	private int qtdVertices;
+	private int conexoesAresta;
 	
-	public GrafoDirecionado(int qtdVertices) {
-		this.qtdVertices = qtdVertices;
-		this.grafo = new LinkedList<>();
-
+	public GrafoDirecionado(int qtdVertices, int conexoesAresta) {
+		if (conexoesAresta < qtdVertices) {
+			this.conexoesAresta = conexoesAresta;
+			this.qtdVertices = qtdVertices;
+			this.grafo = new LinkedList<>();
+			
+			for (int i = 0; i < this.qtdVertices; i++) {
+				grafo.add(new LinkedList<Integer>());
+			}
+			
+			gerarGrafo();
+		} else {
+			System.out.println("O numero de vertices deve ser maior que o numero de arestas");
+		}
+	}
+	
+	public void gerarGrafo() {
 		for (int i = 0; i < this.qtdVertices; i++) {
-			grafo.add(new LinkedList<Integer>());
+			
+			while (getVizinhanca(i).size() < this.conexoesAresta) {
+				
+				int random = new Random().nextInt(this.qtdVertices);
+				
+				if (getVizinhanca(i).contains(random) || random == i) {
+					continue;
+				}
+				
+				getVizinhanca(i).add(random);
+				
+			}
 		}
 	}
 	
@@ -38,10 +67,6 @@ public class GrafoDirecionado {
 	
 	public LinkedList<Integer> getVizinhanca(int v) {
 		return existeVertice(v) ? this.grafo.get(v) : null;
-	}
-	
-	public void gerarGrafo() {
-		// Andre: conectar vertices gerando arestas
 	}
 	
 	public void print() {
