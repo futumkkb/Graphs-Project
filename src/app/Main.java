@@ -31,35 +31,87 @@ public class Main {
 		int qtdArestas = sc.nextInt();
 
 		GrafoDirecionado gr = new GrafoDirecionado(qtdVertices, qtdArestas);
-
+		gr.gerarMatrizAdjacencia(qtdVertices, qtdArestas);
 		System.out.println("Grafo:");
 		gr.print();
 
-		System.out.println("--------------------------");
+		fechoTransitivoDiretoDFS(qtdVertices, gr);
+		fechoTransitivoInversoDFS(qtdVertices, gr);
+		fechoTransitivoWarshall(qtdVertices, gr);
+		baseAntibase(qtdVertices, gr);
+		baseAntibaseWarshall(qtdVertices, gr);
+		// System.out.println("Você deseja achar o fecho transitivo direto de qual
+		// vértice? ");
+		// int verticeInicial = sc.nextInt();
 
-		System.out.println("Você deseja achar o fecho transitivo direto de qual vértice? ");
-		int verticeInicial = sc.nextInt();
+		// gr.buscaProfundidade(verticeInicial);
+		// System.out.println();
+		// System.out.println("Você deseja achar o fecho inverso de qual vértice? ");
+		// int fechoI = sc.nextInt();
 
-		gr.buscaProfundidade(verticeInicial);
-		System.out.println();
-		System.out.println("Você deseja achar o fecho inverso de qual vértice? ");
-		int fechoI = sc.nextInt();
+		// Set<Integer> fechoInverso = gr.encontraFechoInverso(fechoI);
+		// System.out.println("Fecho inverso do vértice " + fechoI + fechoInverso);
+		// System.out.println();
+		// System.out.println("Fecho transitivo do grafo utilizando o metodo de
+		// warshall:");
 
-		Set<Integer> fechoInverso = gr.encontraFechoInverso(fechoI);
-		System.out.println("Fecho inverso do vértice " + fechoI + fechoInverso);
-		System.out.println();
+		// int[][] fechoTransitivo = gr.warshall();
+		// // Imprime matriz do método de warshall
+		// for (int i = 0; i < gr.getQtdVertices(); i++) {
+		// for (int j = 0; j < gr.getQtdVertices(); j++) {
+		// System.out.print(fechoTransitivo[i][j] + " ");
+		// }
+		// System.out.println();
+		// }
+
+		// gr.baseAntibase(3);
+		// System.out.println("-----------------------------------");
+
+		// gr.baseAntibaseWarshall();
+
+	}
+
+	public static void fechoTransitivoDiretoDFS(int numVertices, GrafoDirecionado g) {
+		System.out.println("Fecho transitivo direto usando DFS: ");
+		for (int i = 0; i < numVertices; i++) {
+			g.buscaProfundidade(i);
+			System.out.println(" ");
+		}
+		System.out.println("----------------------");
+	}
+
+	public static void fechoTransitivoInversoDFS(int numVertices, GrafoDirecionado g) {
+		System.out.println("Fecho transitivo inverso usando DFS: ");
+		for (int i = 0; i < numVertices; i++) {
+			Set<Integer> fechoInverso = g.encontraFechoInverso(i);
+			System.out.println("Fecho inverso do vértice " + i + fechoInverso);
+		}
+		System.out.println("----------------------");
+	}
+
+	public static void fechoTransitivoWarshall(int numVertices, GrafoDirecionado g) {
 		System.out.println("Fecho transitivo do grafo utilizando o metodo de warshall:");
 
-		int[][] fechoTransitivo = gr.warshall();
+		int[][] fechoTransitivo = g.warshall();
 		// Imprime matriz do método de warshall
-		for (int i = 0; i < gr.getQtdVertices(); i++) {
-			for (int j = 0; j < gr.getQtdVertices(); j++) {
+		for (int i = 0; i < g.getQtdVertices(); i++) {
+			for (int j = 0; j < g.getQtdVertices(); j++) {
 				System.out.print(fechoTransitivo[i][j] + " ");
 			}
 			System.out.println();
 		}
+		System.out.println("----------------------");
+	}
 
-		gr.baseAntibase(3);
+	public static void baseAntibase(int numVertices, GrafoDirecionado g) {
+		for (int i = 0; i < numVertices; i++) {
+			g.baseAntibase(i);
+		}
+		System.out.println("----------------------");
+	}
 
+	public static void baseAntibaseWarshall(int numVertices, GrafoDirecionado g) {
+		g.baseAntibaseWarshall();
+		System.out.println("----------------------");
 	}
 }
