@@ -110,4 +110,32 @@ public class GrafoDirecionado {
 		}
 	}
 
+	public int[][] warshall() {
+		int[][] fechoTransitivo = new int[qtdVertices][qtdVertices];
+
+		// inicializa a matriz de fecho transitivo com os valores da matriz de
+		// adjacência
+		for (int i = 0; i < qtdVertices; i++) {
+			for (int j = 0; j < qtdVertices; j++) {
+				fechoTransitivo[i][j] = grafo[i][j];
+			}
+		}
+
+		// aplica o algoritmo de Warshall
+		for (int k = 0; k < qtdVertices; k++) {
+			for (int i = 0; i < qtdVertices; i++) {
+				for (int j = 0; j < qtdVertices; j++) {
+					if (fechoTransitivo[i][k] == 1 && fechoTransitivo[k][j] == 1) {
+						fechoTransitivo[i][j] = 1;
+					}
+				}
+			}
+		}
+
+		return fechoTransitivo;
+	}
+
+	public int getQtdVertices() {
+		return this.qtdVertices;
+	}
 }

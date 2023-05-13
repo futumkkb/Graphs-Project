@@ -3,6 +3,7 @@ package app;
 import java.rmi.server.SocketSecurityException;
 
 import business.GrafoDirecionado;
+
 import java.util.Scanner;
 import java.util.Set;
 
@@ -46,6 +47,17 @@ public class Main {
 
 		Set<Integer> fechoInverso = gr.encontraFechoInverso(fechoI);
 		System.out.println("Fecho inverso do vértice " + fechoI + fechoInverso);
-	}
 
+		System.out.println("Fecho transitivo do grafo utilizando o metodo de warshall:");
+
+		int[][] fechoTransitivo = gr.warshall();
+
+		for (int i = 0; i < gr.getQtdVertices(); i++) {
+			for (int j = 0; j < gr.getQtdVertices(); j++) {
+				System.out.print(fechoTransitivo[i][j] + " ");
+			}
+			System.out.println();
+		}
+
+	}
 }
