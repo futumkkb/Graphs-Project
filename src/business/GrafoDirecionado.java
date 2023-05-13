@@ -1,77 +1,74 @@
 package business;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.Arrays;
 
 public class GrafoDirecionado {
 	
-	private List<LinkedList<Integer>> grafo;
-	private int qtdVertices;
-	private int conexoesAresta;
+	private int qtdVertices, limiteArestas;
+	private int[][] grafo;
 	
-	public GrafoDirecionado(int qtdVertices, int conexoesAresta) {
-		if (conexoesAresta < qtdVertices) {
-			this.conexoesAresta = conexoesAresta;
-			this.qtdVertices = qtdVertices;
-			this.grafo = new LinkedList<>();
-			
-			for (int i = 0; i < this.qtdVertices; i++) {
-				grafo.add(new LinkedList<Integer>());
-			}
-			
-			gerarGrafo();
-		} else {
-			System.out.println("O numero de vertices deve ser maior que o numero de arestas");
+	// - 0 1 2 3 4 5 6 7 8 9
+	// 0 - - - - - - - - - - 
+	// 1 - - - - - - - - - -
+	// 2 - 1 - - 1 - - - - -
+	// 3 - - 1 - 1 - - - - -
+	// 4 - 1 - - - - - - - -
+	// 5 - - - - - - - - - -
+	// 6 - - - - - - - - - -
+	// 7 - - - - - - - - - -
+	// 8 - - - - - - - - - -
+	// 9 - - - - - - - - - -
+	
+	public GrafoDirecionado(int qtdVertices, int limiteArestas) {
+		if (limiteArestas > qtdVertices) {
+			System.out.println("O numero maximo de arestas por vertice não pode ser maior que o numero de vertices");
+			return;
 		}
+		
+		this.qtdVertices = qtdVertices;
+		this.limiteArestas = limiteArestas;
+		
+		this.grafo = new int[qtdVertices][qtdVertices];
+		
+		gerarGrafo(this.grafo);
 	}
 	
-	public void gerarGrafo() {
-		for (int i = 0; i < this.qtdVertices; i++) {
-			
-			while (getVizinhanca(i).size() < this.conexoesAresta) {
-				
-				int random = new Random().nextInt(this.qtdVertices);
-				
-				if (getVizinhanca(i).contains(random) || random == i) {
-					continue;
+	public void gerarGrafo(int[][] grafo) {
+		
+		for (int i = 0; i < qtdVertices; i++) {
+			for (int j = 0; j < qtdVertices; j++) {
+				grafo[i][j] = 0;
+			}
+		}
+		
+		for (int i = 0; i < qtdVertices; i++) {
+			for (int j = 0; j < limiteArestas; j++) {
+				for(;;) {
+					int randomVertice = (int)(Math.random() * (qtdVertices));
+					
+					if (grafo[i][randomVertice] != 1 && randomVertice != i) {
+						grafo[i][randomVertice] = 1;
+						break;
+					}
 				}
-				
-				getVizinhanca(i).add(random);
-				
 			}
 		}
-	}
-	
-	public boolean existeVertice(int v) {
-		return grafo.get(v) != null;
-	}
-
-	public boolean existeAresta(int v, int w) {
-		return grafo.get(v).contains(w);
-	}
-	
-	public void addVertice(int v) {
-		if (!existeVertice(v)) {
-			grafo.set(v, new LinkedList<Integer>());
-		}
-	}
-	
-	public void addAresta(int v, int w) {
-		if (!existeAresta(v, w)) {
-			grafo.get(v).add(w);
-		}
-	}
-	
-	public LinkedList<Integer> getVizinhanca(int v) {
-		return existeVertice(v) ? this.grafo.get(v) : null;
 	}
 	
 	public void print() {
 		for (int i = 0; i < qtdVertices; i++) {
-			System.out.println(i + ": " + grafo.get(i).toString());
+			System.out.println(i + ": " + Arrays.toString(getVizinhanca(i)));
 		}
+	}
+	
+	public int[] getVizinhanca(int vertice) {
+		int[] vizinhanca = new int[limiteArestas]; int j = 0;
+		for (int i = 0; i < qtdVertices; i++) {
+			if (this.grafo[vertice][i] == 1) {
+				vizinhanca[j] = i;
+				j++;
+			}
+		}
+		return vizinhanca;
 	}
 }

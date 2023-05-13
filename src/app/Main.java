@@ -18,8 +18,6 @@ public class Main {
 	public static void main(String[] args) {
 		GrafoDirecionado gr = new GrafoDirecionado(100000, 2);
 		
-		gr.gerarGrafo();
-		
 		gr.print();
 	}
 	
