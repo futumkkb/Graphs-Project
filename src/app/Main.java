@@ -4,6 +4,7 @@ import java.rmi.server.SocketSecurityException;
 
 import business.GrafoDirecionado;
 import java.util.Scanner;
+import java.util.Set;
 
 public class Main {
 
@@ -35,11 +36,16 @@ public class Main {
 
 		System.out.println("--------------------------");
 
-		System.out.println("Você deseja realizar uma busca em profundidade a partir de qual vértice?");
+		System.out.println("Você deseja achar o fecho transitivo direto de qual vértice? ");
 		int verticeInicial = sc.nextInt();
 
 		gr.buscaProfundidade(verticeInicial);
+		System.out.println();
+		System.out.println("Você deseja achar o fecho inverso de qual vértice? ");
+		int fechoI = sc.nextInt();
 
+		Set<Integer> fechoInverso = gr.encontraFechoInverso(fechoI);
+		System.out.println("Fecho inverso do vértice " + fechoI + fechoInverso);
 	}
 
 }

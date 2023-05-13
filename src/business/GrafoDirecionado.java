@@ -1,6 +1,8 @@
 package business;
 
 import java.util.Arrays;
+import java.util.Set;
+import java.util.HashSet;
 
 public class GrafoDirecionado {
 
@@ -85,6 +87,25 @@ public class GrafoDirecionado {
 		for (int i = 0; i < qtdVertices; i++) {
 			if (grafo[vertice][i] == 1 && !visitados[i]) {
 				buscaProfundidade(i, visitados);
+			}
+		}
+	}
+
+	public Set<Integer> encontraFechoInverso(int vertice) {
+		Set<Integer> fechoInverso = new HashSet<>();
+		boolean[] visitados = new boolean[qtdVertices];
+
+		encontraFechoInversoRecursivo(vertice, visitados, fechoInverso);
+
+		return fechoInverso;
+	}
+
+	private void encontraFechoInversoRecursivo(int vertice, boolean[] visitados, Set<Integer> fechoInverso) {
+		visitados[vertice] = true;
+		for (int i = 0; i < qtdVertices; i++) {
+			if (grafo[i][vertice] == 1 && !visitados[i]) {
+				fechoInverso.add(i);
+				encontraFechoInversoRecursivo(i, visitados, fechoInverso);
 			}
 		}
 	}
