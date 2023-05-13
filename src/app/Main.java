@@ -47,17 +47,19 @@ public class Main {
 
 		Set<Integer> fechoInverso = gr.encontraFechoInverso(fechoI);
 		System.out.println("Fecho inverso do vértice " + fechoI + fechoInverso);
-
+		System.out.println();
 		System.out.println("Fecho transitivo do grafo utilizando o metodo de warshall:");
 
 		int[][] fechoTransitivo = gr.warshall();
-
+		// Imprime matriz do método de warshall
 		for (int i = 0; i < gr.getQtdVertices(); i++) {
 			for (int j = 0; j < gr.getQtdVertices(); j++) {
 				System.out.print(fechoTransitivo[i][j] + " ");
 			}
 			System.out.println();
 		}
+
+		gr.baseAntibase(3);
 
 	}
 }

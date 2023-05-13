@@ -3,6 +3,7 @@ package business;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.HashSet;
+import java.util.ArrayList;
 
 public class GrafoDirecionado {
 
@@ -138,4 +139,27 @@ public class GrafoDirecionado {
 	public int getQtdVertices() {
 		return this.qtdVertices;
 	}
+
+	public void baseAntibase(int verticeInicial) {
+		// inicializa as estruturas de dados
+		boolean[] visitados = new boolean[qtdVertices];
+		ArrayList<Integer> base = new ArrayList<Integer>();
+		ArrayList<Integer> antibase = new ArrayList<Integer>();
+
+		// realiza a busca em profundidade
+		buscaProfundidade(verticeInicial, visitados);
+
+		// separa os vértices na base e antibase
+		for (int i = 0; i < qtdVertices; i++) {
+			if (visitados[i]) {
+				base.add(i);
+			} else {
+				antibase.add(i);
+			}
+		}
+		// imprime o resultado
+		System.out.println("Base: " + base.toString());
+		System.out.println("Antibase: " + antibase.toString());
+	}
+
 }
