@@ -97,18 +97,20 @@ public class GrafoDirecionado {
 		return vizinhanca;
 	}
 
-	public void buscaProfundidade(int verticeInicial) {
+	public void buscaProfundidadeV(int verticeInicial) {
 		boolean[] visitados = new boolean[qtdVertices];
-		buscaProfundidade(verticeInicial, visitados);
+		buscaProfundidade(verticeInicial, visitados, true);
 	}
 
-	private void buscaProfundidade(int vertice, boolean[] visitados) {
+	private void buscaProfundidade(int vertice, boolean[] visitados, boolean imprime) {
 		visitados[vertice] = true;
-		System.out.print(vertice + " ");
+		if (imprime) {
+			System.out.print(vertice + " ");
+		}
 
 		for (int i = 0; i < qtdVertices; i++) {
 			if (grafo[vertice][i] == 1 && !visitados[i]) {
-				buscaProfundidade(i, visitados);
+				buscaProfundidade(i, visitados, imprime);
 			}
 		}
 	}
@@ -168,7 +170,7 @@ public class GrafoDirecionado {
 		ArrayList<Integer> antibase = new ArrayList<Integer>();
 
 		// realiza a busca em profundidade
-		buscaProfundidade(verticeInicial, visitados);
+		buscaProfundidade(verticeInicial, visitados, false);
 
 		// separa os vértices na base e antibase
 		for (int i = 0; i < qtdVertices; i++) {

@@ -46,7 +46,7 @@ public class Main {
 	public static void fechoTransitivoDiretoDFS(int numVertices, GrafoDirecionado g) {
 		System.out.println("Fecho transitivo direto usando DFS: ");
 		for (int i = 0; i < numVertices; i++) {
-			g.buscaProfundidade(i);
+			g.buscaProfundidadeV(i);
 			System.out.println(" ");
 		}
 		System.out.println("----------------------");
@@ -56,7 +56,7 @@ public class Main {
 		System.out.println("Fecho transitivo inverso usando DFS: ");
 		for (int i = 0; i < numVertices; i++) {
 			Set<Integer> fechoInverso = g.encontraFechoInverso(i);
-			System.out.println("Fecho inverso do vértice " + i + fechoInverso);
+			System.out.println(i + "" + fechoInverso);
 		}
 		System.out.println("----------------------");
 	}
