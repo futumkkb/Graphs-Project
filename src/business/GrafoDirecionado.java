@@ -4,13 +4,18 @@ import java.util.Arrays;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.ArrayList;
-import java.util.Random;
 
 public class GrafoDirecionado {
 
 	private int qtdVertices, limiteArestas;
 	private int[][] grafo;
-	private boolean[][] matrizAdjacencia;
+	
+	public double genTime;
+	public double fechoTransitivoDiretoTime;
+	public double fechoTransitivoInversoTime;
+	public double fechoTransitivoWarshallTime;
+	public double baseAntibaseNaive;
+	public double baseAntibaseWarshall;
 
 	// - 0 1 2 3 4 5 6 7 8 9
 	// 0 - - - - - - - - - -
@@ -38,7 +43,10 @@ public class GrafoDirecionado {
 		gerarGrafo(this.grafo);
 	}
 
+	// OK
 	public void gerarGrafo(int[][] grafo) {
+		
+		long a = System.currentTimeMillis();
 
 		for (int i = 0; i < qtdVertices; i++) {
 			for (int j = 0; j < qtdVertices; j++) {
@@ -58,33 +66,19 @@ public class GrafoDirecionado {
 				}
 			}
 		}
+		
+		this.genTime = System.currentTimeMillis() - a;
 	}
 
-	public void gerarMatrizAdjacencia(int numVertices, int numArestas) {
-		boolean[][] matriz = new boolean[numVertices][numVertices];
-		int countArestas = 0;
-		Random rand = new Random();
-
-		while (countArestas < numArestas) {
-			int u = rand.nextInt(numVertices);
-			int v = rand.nextInt(numVertices);
-
-			if (u != v && !matriz[u][v]) {
-				matriz[u][v] = true;
-				matriz[v][u] = true;
-				countArestas++;
-			}
-		}
-		this.matrizAdjacencia = matriz;
-
-	}
-
+	// OK
 	public void print() {
+		System.out.println("Grafo:");
 		for (int i = 0; i < qtdVertices; i++) {
 			System.out.println(i + ": " + Arrays.toString(getVizinhanca(i)));
 		}
 	}
 
+	// OK
 	public int[] getVizinhanca(int vertice) {
 		int[] vizinhanca = new int[limiteArestas];
 		int j = 0;
@@ -97,33 +91,48 @@ public class GrafoDirecionado {
 		return vizinhanca;
 	}
 
-	public void buscaProfundidadeV(int verticeInicial) {
-		boolean[] visitados = new boolean[qtdVertices];
-		buscaProfundidade(verticeInicial, visitados, true);
-	}
-
-	private void buscaProfundidade(int vertice, boolean[] visitados, boolean imprime) {
+	// OK
+	private void buscaProfundidade(int vertice, boolean[] visitados, Set<Integer> fechoDireto) {
 		visitados[vertice] = true;
-		if (imprime) {
-			System.out.print(vertice + " ");
-		}
-
 		for (int i = 0; i < qtdVertices; i++) {
 			if (grafo[vertice][i] == 1 && !visitados[i]) {
-				buscaProfundidade(i, visitados, imprime);
+				fechoDireto.add(i);
+				buscaProfundidade(i, visitados, fechoDireto);
 			}
 		}
 	}
-
-	public Set<Integer> encontraFechoInverso(int vertice) {
-		Set<Integer> fechoInverso = new HashSet<>();
-		boolean[] visitados = new boolean[qtdVertices];
-
-		encontraFechoInversoRecursivo(vertice, visitados, fechoInverso);
-
-		return fechoInverso;
+	
+	// OK
+	private void buscaProfundidade(int vertice, boolean[] visitados) {
+		visitados[vertice] = true;
+		for (int i = 0; i < qtdVertices; i++) {
+			if (grafo[vertice][i] == 1 && !visitados[i]) {
+				buscaProfundidade(i, visitados);
+			}
+		}
 	}
-
+	
+	// OK
+	public void fechoTransitivoDiretoDFS() {
+		long a = System.currentTimeMillis();
+		
+		System.out.println("Fecho transitivo direto usando DFS: ");
+		
+		for (int i = 0; i < this.qtdVertices; i++) {
+			
+			Set<Integer> fechoDireto = new HashSet<>();
+			
+			boolean[] visitados = new boolean[qtdVertices];
+			
+			buscaProfundidade(i, visitados, fechoDireto);
+			
+			System.out.println(i + "" + fechoDireto);
+		}
+		
+		this.fechoTransitivoDiretoTime = System.currentTimeMillis() - a;
+	}
+	
+	// OK
 	private void encontraFechoInversoRecursivo(int vertice, boolean[] visitados, Set<Integer> fechoInverso) {
 		visitados[vertice] = true;
 		for (int i = 0; i < qtdVertices; i++) {
@@ -134,71 +143,117 @@ public class GrafoDirecionado {
 		}
 	}
 
-	public int[][] warshall() {
-		int[][] fechoTransitivo = new int[qtdVertices][qtdVertices];
-
-		// inicializa a matriz de fecho transitivo com os valores da matriz de
-		// adjacência
-		for (int i = 0; i < qtdVertices; i++) {
-			for (int j = 0; j < qtdVertices; j++) {
-				fechoTransitivo[i][j] = grafo[i][j];
-			}
+	// OK
+	public void fechoTransitivoInversoDFS() {
+		long a = System.currentTimeMillis();
+		
+		System.out.println("Fecho transitivo inverso usando DFS:");
+		
+		for (int i = 0; i < this.qtdVertices; i++) {
+			
+			Set<Integer> fechoInverso = new HashSet<>();
+			
+			boolean[] visitados = new boolean[qtdVertices];
+	
+			encontraFechoInversoRecursivo(i, visitados, fechoInverso);
+			
+			System.out.println(i + "" + fechoInverso);
 		}
+		
+		this.fechoTransitivoInversoTime = System.currentTimeMillis() - a;
+	}
 
-		// aplica o algoritmo de Warshall
-		for (int k = 0; k < qtdVertices; k++) {
-			for (int i = 0; i < qtdVertices; i++) {
-				for (int j = 0; j < qtdVertices; j++) {
-					if (fechoTransitivo[i][k] == 1 && fechoTransitivo[k][j] == 1) {
-						fechoTransitivo[i][j] = 1;
+	// OK
+    public void fechoTransitivoWarshall() {
+    	long a = System.currentTimeMillis();
+    	
+        boolean fechoTransitivo[][] = new boolean[qtdVertices][qtdVertices];
+        
+        for (int i = 0; i < qtdVertices; i++) {    
+            for (int j = 0; j < qtdVertices; j++) {
+                if (grafo[i][j] != 0) {
+                	fechoTransitivo[i][j] = true;
+        		}
+        	}
+            fechoTransitivo[i][i] = true;
+        }
+        
+        for (int i = 0; i < qtdVertices; i++) {
+            for (int j = 0; j < qtdVertices; j++) {
+                if (fechoTransitivo[j][i]) {
+                    for (int k = 0; k < qtdVertices; k++) {
+                        if (fechoTransitivo[j][i] && fechoTransitivo[i][k]) {
+                        	fechoTransitivo[j][k] = true;  
+                        }
+                    }
+                }
+            }
+        }
+        
+        System.out.println("Fecho transitivo do grafo utilizando o metodo de Warshall:");
+        
+        for (int v = 0; v < qtdVertices; v++)  {
+            for (int w = 0; w < qtdVertices; w++) {
+                if (fechoTransitivo[v][w]) {
+                    System.out.print("1 ");
+                } else {
+                    System.out.print("0 ");
+                }
+            }
+            System.out.println();
+        }
+        
+		this.fechoTransitivoWarshallTime = System.currentTimeMillis() - a;
+    }
+
+	// Não Funciona
+	public void baseAntibaseNaive() {
+		long a = System.currentTimeMillis();
+		
+		System.out.println("Bases e Antibases usando algoritmo Naive");
+		
+		ArrayList<Integer> bases = new ArrayList<Integer>();
+		ArrayList<Integer> antibases = new ArrayList<Integer>();
+		boolean[] visitados = new boolean[qtdVertices];
+		
+		for (int i = 0; i < this.qtdVertices; i++) {
+	
+			buscaProfundidade(i, visitados);
+	
+			for (int j = 0; j < qtdVertices; j++) {
+				if (visitados[j] && !bases.contains(j)) {
+					bases.add(j);
+				} else {
+					if (!antibases.contains(j)) {
+						antibases.add(j);
 					}
 				}
 			}
 		}
-
-		return fechoTransitivo;
+		
+		System.out.println("Base: " + bases.toString());
+		System.out.println("Antibase: " + antibases.toString());
+		
+		this.baseAntibaseNaive = System.currentTimeMillis() - a;
 	}
-
-	public int getQtdVertices() {
-		return this.qtdVertices;
-	}
-
-	public void baseAntibase(int verticeInicial) {
-		// inicializa as estruturas de dados
-		boolean[] visitados = new boolean[qtdVertices];
-		ArrayList<Integer> base = new ArrayList<Integer>();
-		ArrayList<Integer> antibase = new ArrayList<Integer>();
-
-		// realiza a busca em profundidade
-		buscaProfundidade(verticeInicial, visitados, false);
-
-		// separa os vértices na base e antibase
-		for (int i = 0; i < qtdVertices; i++) {
-			if (visitados[i]) {
-				base.add(i);
-			} else {
-				antibase.add(i);
-			}
-		}
-		// imprime o resultado
-		System.out.println("Base: " + base.toString());
-		System.out.println("Antibase: " + antibase.toString());
-	}
-
+	
+	// Não Funciona
 	public void baseAntibaseWarshall() {
-		// Inicializa as estruturas de dados
+		long a = System.currentTimeMillis();
+		
+		System.out.println("Bases e Antibases usando algoritmo de Warshall");
+		
 		boolean[][] alcancaveis = new boolean[qtdVertices][qtdVertices];
+		
 		ArrayList<Integer> base = new ArrayList<Integer>();
 		ArrayList<Integer> antibase = new ArrayList<Integer>();
 
-		// Preenche a matriz alcancaveis com a matriz de adjacencia
 		for (int i = 0; i < qtdVertices; i++) {
 			for (int j = 0; j < qtdVertices; j++) {
-				alcancaveis[i][j] = matrizAdjacencia[i][j];
+				alcancaveis[i][j] = getBoolean(grafo[i][j]);
 			}
 		}
 
-		// Aplica o algoritmo de Warshall
 		for (int k = 0; k < qtdVertices; k++) {
 			for (int i = 0; i < qtdVertices; i++) {
 				for (int j = 0; j < qtdVertices; j++) {
@@ -207,25 +262,26 @@ public class GrafoDirecionado {
 			}
 		}
 
-		// Separa os vértices na base e antibase
 		for (int i = 0; i < qtdVertices; i++) {
-			boolean todosAlcancaveis = true;
 			for (int j = 0; j < qtdVertices; j++) {
 				if (!alcancaveis[i][j]) {
-					todosAlcancaveis = false;
+					antibase.add(i);
 					break;
+				} else {
+					if (!base.contains(i)) {
+						base.add(i);
+					}
 				}
-			}
-			if (todosAlcancaveis) {
-				base.add(i);
-			} else {
-				antibase.add(i);
 			}
 		}
 
-		// Imprime o resultado
 		System.out.println("Base: " + base.toString());
 		System.out.println("Antibase: " + antibase.toString());
+		
+		this.baseAntibaseWarshall = System.currentTimeMillis() - a;
 	}
-
+	
+	public boolean getBoolean(int value) {
+		return value == 1;
+	}
 }
