@@ -18,18 +18,6 @@ public class GrafoDirecionado {
 	public double baseAntibaseNaive;
 	public double baseAntibaseWarshall;
 
-	// - 0 1 2 3 4 5 6 7 8 9
-	// 0 - - - - - - - - - -
-	// 1 - - - - - - - - - -
-	// 2 - 1 - - 1 - - - - -
-	// 3 - - 1 - 1 - - - - -
-	// 4 - 1 - - - - - - - -
-	// 5 - - - - - - - - - -
-	// 6 - - - - - - - - - -
-	// 7 - - - - - - - - - -
-	// 8 - - - - - - - - - -
-	// 9 - - - - - - - - - -
-
 	public GrafoDirecionado(int qtdVertices, int limiteArestas) {
 		if (limiteArestas > qtdVertices) {
 			System.out.println("O numero maximo de arestas por vertice não pode ser maior que o numero de vertices");
@@ -44,7 +32,6 @@ public class GrafoDirecionado {
 		gerarGrafo(this.grafo);
 	}
 
-	// OK
 	public void gerarGrafo(int[][] grafo) {
 		
 		long a = System.currentTimeMillis();
@@ -71,7 +58,6 @@ public class GrafoDirecionado {
 		this.genTime = System.currentTimeMillis() - a;
 	}
 
-	// OK
 	public void print() {
 		System.out.println("Grafo:");
 		for (int i = 0; i < qtdVertices; i++) {
@@ -79,7 +65,6 @@ public class GrafoDirecionado {
 		}
 	}
 
-	// OK
 	public int[] getVizinhanca(int vertice) {
 		int[] vizinhanca = new int[limiteArestas];
 		int j = 0;
@@ -92,7 +77,6 @@ public class GrafoDirecionado {
 		return vizinhanca;
 	}
 
-	// OK
 	private void buscaProfundidade(int vertice, boolean[] visitados, Set<Integer> fechoDireto) {
 		visitados[vertice] = true;
 		for (int i = 0; i < qtdVertices; i++) {
@@ -103,7 +87,6 @@ public class GrafoDirecionado {
 		}
 	}
 	
-	// OK
 	public void fechoTransitivoDiretoDFS() {
 		long a = System.currentTimeMillis();
 		
@@ -123,7 +106,6 @@ public class GrafoDirecionado {
 		this.fechoTransitivoDiretoTime = System.currentTimeMillis() - a;
 	}
 	
-	// OK
 	private void encontraFechoInversoRecursivo(int vertice, boolean[] visitados, Set<Integer> fechoInverso) {
 		visitados[vertice] = true;
 		for (int i = 0; i < qtdVertices; i++) {
@@ -134,7 +116,6 @@ public class GrafoDirecionado {
 		}
 	}
 
-	// OK
 	public void fechoTransitivoInversoDFS() {
 		long a = System.currentTimeMillis();
 		
@@ -154,7 +135,6 @@ public class GrafoDirecionado {
 		this.fechoTransitivoInversoTime = System.currentTimeMillis() - a;
 	}
 
-	// OK
     public void fechoTransitivoWarshall() {
     	long a = System.currentTimeMillis();
     	
@@ -197,7 +177,6 @@ public class GrafoDirecionado {
 		this.fechoTransitivoWarshallTime = System.currentTimeMillis() - a;
     }
 
-	// Não Funciona
 	public void baseAntibaseWarshall() {
 		long a = System.currentTimeMillis();
 		
@@ -208,7 +187,6 @@ public class GrafoDirecionado {
 		List<Integer> bases = new ArrayList<>();
 		List<Integer> antibases = new ArrayList<>();
 
-        // Inicializar a matriz de distâncias
         for (int i = 0; i < qtdVertices; i++) {
             for (int j = 0; j < qtdVertices; j++) {
                 if (i == j) {
@@ -221,7 +199,6 @@ public class GrafoDirecionado {
             }
         }
 
-        // Executar o algoritmo de Floyd-Warshall
         for (int k = 0; k < qtdVertices; k++) {
             for (int i = 0; i < qtdVertices; i++) {
                 for (int j = 0; j < qtdVertices; j++) {
