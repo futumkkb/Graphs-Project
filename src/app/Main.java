@@ -52,7 +52,7 @@ public class Main {
 		
 		System.out.println("");
 		
-//		gd.baseAntibaseNaive();
+		gd.baseAntibaseNaive();
 		
 		System.out.println("");
 		

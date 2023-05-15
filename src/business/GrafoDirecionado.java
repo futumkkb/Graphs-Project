@@ -3,6 +3,7 @@ package business;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.HashSet;
+import java.util.List;
 import java.util.ArrayList;
 
 public class GrafoDirecionado {
@@ -207,80 +208,116 @@ public class GrafoDirecionado {
     }
 
 	// Não Funciona
-	public void baseAntibaseNaive() {
-		long a = System.currentTimeMillis();
-		
-		System.out.println("Bases e Antibases usando algoritmo Naive");
-		
-		ArrayList<Integer> bases = new ArrayList<Integer>();
-		ArrayList<Integer> antibases = new ArrayList<Integer>();
-		boolean[] visitados = new boolean[qtdVertices];
-		
-		for (int i = 0; i < this.qtdVertices; i++) {
-	
-			buscaProfundidade(i, visitados);
-	
-			for (int j = 0; j < qtdVertices; j++) {
-				if (visitados[j] && !bases.contains(j)) {
-					bases.add(j);
-				} else {
-					if (!antibases.contains(j)) {
-						antibases.add(j);
-					}
-				}
-			}
-		}
-		
-		System.out.println("Base: " + bases.toString());
-		System.out.println("Antibase: " + antibases.toString());
-		
-		this.baseAntibaseNaive = System.currentTimeMillis() - a;
-	}
-	
-	// Não Funciona
 	public void baseAntibaseWarshall() {
 		long a = System.currentTimeMillis();
 		
 		System.out.println("Bases e Antibases usando algoritmo de Warshall");
 		
-		boolean[][] alcancaveis = new boolean[qtdVertices][qtdVertices];
+		int[][] distancias = new int[qtdVertices][qtdVertices];
 		
-		ArrayList<Integer> base = new ArrayList<Integer>();
-		ArrayList<Integer> antibase = new ArrayList<Integer>();
+		List<Integer> bases = new ArrayList<>();
+		List<Integer> antibases = new ArrayList<>();
 
-		for (int i = 0; i < qtdVertices; i++) {
-			for (int j = 0; j < qtdVertices; j++) {
-				alcancaveis[i][j] = getBoolean(grafo[i][j]);
-			}
-		}
+        // Inicializar a matriz de distâncias
+        for (int i = 0; i < qtdVertices; i++) {
+            for (int j = 0; j < qtdVertices; j++) {
+                if (i == j) {
+                    distancias[i][j] = 0;
+                } else if (grafo[i][j] == 0) {
+                    distancias[i][j] = Integer.MAX_VALUE;
+                } else {
+                    distancias[i][j] = grafo[i][j];
+                }
+            }
+        }
 
-		for (int k = 0; k < qtdVertices; k++) {
-			for (int i = 0; i < qtdVertices; i++) {
-				for (int j = 0; j < qtdVertices; j++) {
-					alcancaveis[i][j] = alcancaveis[i][j] || (alcancaveis[i][k] && alcancaveis[k][j]);
-				}
-			}
-		}
+        // Executar o algoritmo de Floyd-Warshall
+        for (int k = 0; k < qtdVertices; k++) {
+            for (int i = 0; i < qtdVertices; i++) {
+                for (int j = 0; j < qtdVertices; j++) {
+                    if (distancias[i][k] != Integer.MAX_VALUE &&
+                            distancias[k][j] != Integer.MAX_VALUE &&
+                            distancias[i][k] + distancias[k][j] < distancias[i][j]) {
+                        distancias[i][j] = distancias[i][k] + distancias[k][j];
+                    }
+                }
+            }
+        }
+        
+        for (int i = 0; i < qtdVertices; i++) {
+            boolean eBase = true;
+            boolean eAntibase = true;
 
-		for (int i = 0; i < qtdVertices; i++) {
-			for (int j = 0; j < qtdVertices; j++) {
-				if (!alcancaveis[i][j]) {
-					antibase.add(i);
-					break;
-				} else {
-					if (!base.contains(i)) {
-						base.add(i);
-					}
-				}
-			}
-		}
+            for (int j = 0; j < qtdVertices; j++) {
+                if (i != j && distancias[i][j] != Integer.MAX_VALUE) {
+                    eBase = false;
+                    break;
+                }
+            }
+            
+            for (int j = 0; j < qtdVertices; j++) {
+                if (i != j && distancias[j][i] != Integer.MAX_VALUE) {
+                    eAntibase = false;
+                    break;
+                }
+            }
 
-		System.out.println("Base: " + base.toString());
-		System.out.println("Antibase: " + antibase.toString());
+            if (eBase) {
+            	bases.add(i);
+            }
+            
+            if (eAntibase) {
+                antibases.add(i);
+            }
+        }
+
+		System.out.println("Antibases: " + antibases.toString());
+
+		System.out.println("Bases: " + bases.toString());
 		
 		this.baseAntibaseWarshall = System.currentTimeMillis() - a;
 	}
 	
+    public void baseAntibaseNaive() {
+		long a = System.currentTimeMillis();
+    	
+		List<Integer> bases = new ArrayList<>();
+		List<Integer> antibases = new ArrayList<>();
+
+        for (int i = 0; i < qtdVertices; i++) {
+            boolean eBase = true;
+            boolean eAntibase = true;
+
+            for (int j = 0; j < qtdVertices; j++) {
+                if (grafo[i][j] == 1) {
+                    eBase = false;
+                    break;
+                }
+            }
+            
+            for (int j = 0; j < qtdVertices; j++) {
+                if (i != j && grafo[j][i] == 1) {
+                    eAntibase = false;
+                    break;
+                }
+            }
+
+            if (eBase) {
+            	bases.add(i);
+            }
+            
+            if (eAntibase) {
+                antibases.add(i);
+            }
+        }
+
+		System.out.println("Antibases: " + antibases.toString());
+
+		System.out.println("Bases: " + bases.toString());
+		
+		this.baseAntibaseNaive = System.currentTimeMillis() - a;
+    }
+    
 	public boolean getBoolean(int value) {
 		return value == 1;
 	}
