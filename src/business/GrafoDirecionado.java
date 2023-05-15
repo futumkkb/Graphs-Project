@@ -104,16 +104,6 @@ public class GrafoDirecionado {
 	}
 	
 	// OK
-	private void buscaProfundidade(int vertice, boolean[] visitados) {
-		visitados[vertice] = true;
-		for (int i = 0; i < qtdVertices; i++) {
-			if (grafo[vertice][i] == 1 && !visitados[i]) {
-				buscaProfundidade(i, visitados);
-			}
-		}
-	}
-	
-	// OK
 	public void fechoTransitivoDiretoDFS() {
 		long a = System.currentTimeMillis();
 		

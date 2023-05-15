@@ -1,27 +1,10 @@
 package app;
 
-import java.rmi.server.SocketSecurityException;
-
 import business.GrafoDirecionado;
 
 import java.util.Scanner;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 public class Main {
-
-	// OK - (estrutura de dados) grafo direcionado - Yan
-
-	// OK - (metodo) gerador de grafo - Andre
-
-	// (metodo) implemetar um metodo autoral (naive) para encontrar os fechos
-	// transitivos diretos e inversos
-	// de qualquer vertice e dizer base/antibase
-
-	// (metodo) implementar o metodo de warshall e dizer base/antibase
-
-	// (metodo) teste dizendo tempo de execução usando 10, 100, 1000, 10000 e 100000
-	// vertices
 
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
@@ -56,7 +39,7 @@ public class Main {
 		
 		System.out.println("");
 		
-//		gd.baseAntibaseWarshall();
+		gd.baseAntibaseWarshall();
 		
 		System.out.println("");
 		
